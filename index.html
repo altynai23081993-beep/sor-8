@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>СОР №1 · Системы счисления · 8 класс</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF1F6; --surface:#FFFFFF; --tint:#F3F6FB; --ink:#16233B; --muted:#5B6779;
+  --line:#D5DCE6; --accent:#1D5BD6; --accent-ink:#FFFFFF; --focus:#1D5BD6;
+  --warn:#B3411A; --warn-bg:#FCEDE6;
+  --sans:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Consolas,"Courier New",monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1624; --surface:#18233A; --tint:#1F2C47; --ink:#E8EEF8; --muted:#9AA7BC;
+    --line:#2D3C59; --accent:#6FA0FF; --accent-ink:#0B1426; --focus:#8DB4FF;
+    --warn:#FF9A73; --warn-bg:#3A2219;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1624; --surface:#18233A; --tint:#1F2C47; --ink:#E8EEF8; --muted:#9AA7BC;
+  --line:#2D3C59; --accent:#6FA0FF; --accent-ink:#0B1426; --focus:#8DB4FF;
+  --warn:#FF9A73; --warn-bg:#3A2219;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.5 var(--sans)}
+[hidden]{display:none!important}
+sub{font-size:.7em;line-height:0}
+h1,h2,p{margin:0}
+button{font:inherit;color:inherit}
+
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 56px}
+
+/* ---------- start ---------- */
+.intro{padding:28px 0 18px}
+.intro h1{font-size:1.75rem;line-height:1.2;font-weight:700;letter-spacing:-.01em}
+.intro .sub{margin-top:6px;color:var(--muted)}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;margin:18px 0 0;padding:0;list-style:none;font-weight:500}
+.facts b{font-family:var(--mono);font-weight:700}
+.passport{margin:0 0 16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;font-size:.95rem}
+.passport > div{display:grid;gap:4px 16px;padding:12px 16px;border-top:1px solid var(--line)}
+.passport > div:first-child{border-top:0}
+.passport dt{font-weight:600;color:var(--muted)}
+.passport dd{margin:0}
+.passport ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.passport ul.dots{list-style:disc;padding-left:1.1rem;gap:6px}
+.passport li code{font-family:var(--mono);font-weight:700;margin-right:6px}
+.passport .lead{margin:0 0 6px;font-weight:500}
+@media (min-width:600px){.passport > div{grid-template-columns:12rem 1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 16px}
+.field + .field{margin-top:18px}
+.label{display:block;font-weight:600;margin-bottom:8px}
+input[type=text]{
+  display:block;width:100%;min-height:48px;padding:10px 12px;
+  font:600 1.1rem var(--mono);letter-spacing:.04em;
+  color:var(--ink);background:var(--surface);
+  border:1.5px solid var(--line);border-radius:10px;
+}
+input[type=text].fio{font-family:var(--sans);font-weight:500;letter-spacing:0;font-size:1.05rem}
+input[type=text].filled{border-color:var(--accent)}
+input[type=text]:focus{outline:3px solid var(--focus);outline-offset:1px;border-color:var(--accent)}
+.err{margin-top:12px;padding:10px 12px;border-radius:8px;background:var(--warn-bg);color:var(--warn);font-weight:500}
+.note{margin-top:14px;color:var(--muted);font-size:.92rem}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 22px;
+  font-weight:600;border-radius:10px;border:1.5px solid var(--accent);
+  background:var(--accent);color:var(--accent-ink);cursor:pointer;
+}
+.btn.secondary{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.block{width:100%;margin-top:20px}
+.btn:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+/* segmented radios (variant, A–D, true/false) */
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative;display:inline-block}
+.chip input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.chip span{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:48px;min-height:46px;padding:0 16px;
+  font-weight:600;background:var(--surface);
+  border:1.5px solid var(--line);border-radius:10px;
+}
+.chip input:checked + span{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip input:focus-visible + span{outline:3px solid var(--focus);outline-offset:2px}
+
+/* ---------- test ---------- */
+.bar{
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:5;
+  background:var(--bg);border-bottom:1px solid var(--line);
+}
+.bar-in{max-width:720px;margin:0 auto;padding:10px 16px 8px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.who{min-width:0}
+.who strong{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who small{color:var(--muted);font-size:.85rem}
+.timer{font:700 1.5rem var(--mono);letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.timer.low{color:var(--warn)}
+.prog{height:4px;background:var(--line)}
+.prog i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+
+.task{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;margin:16px 0}
+.task-head{display:flex;align-items:flex-start;gap:12px}
+.num{
+  flex:none;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;
+  background:var(--accent);color:var(--accent-ink);font:700 1rem var(--mono)
+}
+.task-head h2{flex:1;font-size:1.05rem;line-height:1.35;font-weight:600;padding-top:3px}
+.pts{flex:none;color:var(--muted);font-size:.88rem;padding-top:5px;white-space:nowrap}
+.hint{margin-top:10px;color:var(--muted);font-size:.93rem}
+
+.defs{margin:12px 0 4px;padding:10px 12px;background:var(--tint);border-radius:8px;display:grid;gap:6px}
+.defs div{display:grid;grid-template-columns:1.6rem 1fr;gap:6px}
+.defs b{font-family:var(--mono)}
+
+.row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 14px;padding:12px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.row .term{flex:1 1 15rem;display:flex;gap:10px}
+.row .term b{flex:none;font-family:var(--mono);color:var(--muted)}
+
+.q{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:12px 0;border-top:1px solid var(--line)}
+.q:first-of-type{border-top:0}
+.expr{font:600 1.15rem var(--mono);min-width:7.5rem;white-space:nowrap}
+.q input[type=text]{flex:1 1 9rem;width:auto;max-width:17rem}
+.base{font:600 1.15rem var(--mono)}
+
+.finish{margin-top:8px}
+
+/* ---------- result ---------- */
+.rcard{margin-top:24px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 18px}
+.rcard .name{font-size:1.2rem;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
+.rcard .meta{margin-top:2px;color:var(--muted);font-size:.93rem}
+.score{display:flex;align-items:baseline;gap:12px;margin-top:22px}
+.score .big{font:700 4.5rem/1 var(--mono);letter-spacing:-.03em}
+.score .of{font-size:1.1rem;color:var(--muted);font-weight:500}
+.meter{margin-top:14px;height:10px;background:var(--line);border-radius:6px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent)}
+.pct{margin-top:8px;font-weight:500}
+.bin{margin-top:2px;color:var(--muted);font-size:.9rem}
+.bin code{font-family:var(--mono)}
+
+.desc{margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
+.dh{font-size:1.05rem;font-weight:700}
+.dsub{margin-top:2px;color:var(--muted);font-size:.93rem}
+.desc h3{margin:16px 0 2px;font-size:.9rem;line-height:1.4;font-weight:600;color:var(--muted)}
+.drow{display:grid;grid-template-columns:2.2rem 1fr auto;gap:10px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line);font-size:.98rem}
+.drow .n{font-family:var(--mono);color:var(--muted)}
+.drow .s{font-family:var(--mono);font-weight:700;white-space:nowrap}
+.drow .s.zero{color:var(--warn)}
+.drow.dhead{margin-top:12px;padding:0 0 6px;font-size:.82rem;color:var(--muted);font-weight:600}
+.autonote{margin-top:16px;padding:10px 12px;border-radius:8px;background:var(--warn-bg);color:var(--warn);font-weight:500}
+.shot{margin-top:18px;color:var(--muted)}
+.again{margin-top:22px}
+
+/* ---------- modal ---------- */
+.overlay{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:16px;background:rgba(10,18,32,.55)}
+.dialog{width:100%;max-width:420px;background:var(--surface);border-radius:14px;padding:20px 18px}
+.dialog h2{font-size:1.2rem;font-weight:700}
+.dialog p{margin-top:8px;color:var(--muted)}
+.dialog .actions{display:flex;gap:10px;margin-top:20px}
+.dialog .actions .btn{flex:1;padding:0 12px}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+@media (max-width:420px){
+  .score .big{font-size:3.8rem}
+  .intro h1{font-size:1.5rem}
+}
+</style>
+</head>
+<body>
+
+<!-- Старт -->
+<main id="start" class="wrap" hidden>
+  <div class="intro">
+    <h1>СОР №1 по информатике и ИИ</h1>
+    <p class="sub">Раздел «Системы счисления», 8 класс</p>
+    <ul class="facts">
+      <li><b>20</b> минут</li>
+      <li><b>5</b> заданий</li>
+      <li><b>12</b> баллов</li>
+    </ul>
+  </div>
+  <dl class="passport">
+    <div>
+      <dt>Цель обучения</dt>
+      <dd><ul>
+        <li><code>8.4.2.1</code>объяснять понятие алгоритмической предвзятости (bias) и приводить примеры того, как некорректные данные для обучения ИИ могут приводить к дискриминации</li>
+        <li><code>8.2.1.1</code>переводить натуральные числа из десятичной системы счисления в двоичную, восьмеричную, шестнадцатеричную и обратно</li>
+        <li><code>8.2.1.2</code>выполнять арифметические действия (сложение, вычитание) с натуральными числами, в позиционных системах счисления</li>
+      </ul></dd>
+    </div>
+    <div>
+      <dt>Критерий оценивания</dt>
+      <dd>
+        <p class="lead">Обучающийся:</p>
+        <ul class="dots">
+          <li>Знает основные понятия, связанные с искусственным интеллектом и алгоритмической предвзятостью;</li>
+          <li>Переводит натуральные числа из десятичной системы счисления в двоичную, восьмеричную и шестнадцатеричную;</li>
+          <li>Переводит натуральные числа из двоичной, восьмеричной и шестнадцатеричной систем счисления в десятичную;</li>
+          <li>Выполняет арифметические действия (сложение, вычитание) с натуральными числами, в позиционных системах счисления</li>
+        </ul>
+      </dd>
+    </div>
+    <div>
+      <dt>Уровень мыслительных навыков</dt>
+      <dd>Применение</dd>
+    </div>
+    <div>
+      <dt>Время выполнения</dt>
+      <dd>20 минут</dd>
+    </div>
+  </dl>
+  <div class="panel">
+    <div class="field">
+      <label class="label" for="fio">ФИО</label>
+      <input type="text" id="fio" class="fio" placeholder="Фамилия Имя Отчество" autocomplete="name" autocapitalize="words" autocorrect="off" spellcheck="false">
+    </div>
+    <div class="field">
+      <span class="label" id="varLabel">Вариант</span>
+      <div class="seg" role="radiogroup" aria-labelledby="varLabel">
+        <label class="chip"><input type="radio" name="variant" value="1"><span>1 вариант</span></label>
+        <label class="chip"><input type="radio" name="variant" value="2"><span>2 вариант</span></label>
+      </div>
+    </div>
+    <p class="err" id="startErr" role="alert" hidden></p>
+    <button type="button" class="btn block" id="startBtn">Начать работу</button>
+    <p class="note">Таймер запустится сразу после нажатия. Ответы можно менять до кнопки «Завершить работу».</p>
+  </div>
+</main>
+
+<!-- Тест -->
+<div id="test" hidden>
+  <div class="bar">
+    <div class="bar-in">
+      <div class="who"><strong id="whoName"></strong><small id="whoMeta"></small></div>
+      <div class="timer" id="timer" aria-label="Осталось времени">20:00</div>
+    </div>
+    <div class="prog"><i id="progBar"></i></div>
+  </div>
+  <main class="wrap" style="padding-top:4px">
+    <div id="tasks"></div>
+    <button type="button" class="btn block finish" id="finishBtn">Завершить работу</button>
+  </main>
+</div>
+
+<!-- Результат -->
+<main id="result" class="wrap" hidden></main>
+
+<!-- Диалог -->
+<div class="overlay" id="modal" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <h2 id="mTitle"></h2>
+    <p id="mText"></p>
+    <div class="actions">
+      <button type="button" class="btn secondary" id="mCancel"></button>
+      <button type="button" class="btn" id="mOk"></button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ================= Данные заданий ================= */
+var sub = function(n){ return '<sub>'+n+'</sub>'; };
+// перевод: число в системе from -> ответ в системе to
+var conv = function(n, from, to, ans){
+  return { html: n + sub(from), to: to, answer: ans, mode: 'numeric' };
+};
+// действие: ответ в системе to
+var calc = function(html, to, ans){
+  return { html: html, to: to, answer: ans, mode: 'numeric' };
+};
+
+var T2 = { title:'Переведите из десятичной системы счисления в двоичную', max:2, type:'fields' };
+var T3 = { title:'Переведите из десятичной системы счисления в восьмеричную и шестнадцатеричную', max:2, type:'fields' };
+var T4 = { title:'Переведите в десятичную систему счисления', max:3, type:'fields' };
+var T5 = { title:'Выполните действия в указанной системе счисления', max:3, type:'fields' };
+
+var TASKS = {
+  1: [
+    { title:'Установите соответствие', max:2, type:'match',
+      hint:'Для каждого понятия выберите букву подходящего определения.',
+      defs:{
+        A:'Информация, на которой обучается ИИ',
+        B:'Неравное или несправедливое отношение к определённой группе',
+        C:'Система, способная выполнять задачи на основе данных',
+        D:'Систематически несправедливый результат работы алгоритма'
+      },
+      items:[
+        { text:'Алгоритмическая предвзятость', answer:'D' },
+        { text:'Обучающие данные', answer:'A' },
+        { text:'Дискриминация', answer:'B' },
+        { text:'Искусственный интеллект', answer:'C' }
+      ]
+    },
+    Object.assign({}, T2, { items:[ conv(25,10,2,'11001'), conv(52,10,2,'110100') ] }),
+    Object.assign({}, T3, { items:[ conv(75,10,8,'113'), conv(52,10,16,'34') ] }),
+    Object.assign({}, T4, { items:[ conv('101110',2,10,'46'), conv(63,8,10,'51'), conv('3B',16,10,'59') ] }),
+    Object.assign({}, T5, { items:[
+      calc('10111 + 11011', 2, '110010'),
+      calc('11100 − 10011', 2, '1001'),
+      calc('15'+sub(8)+' + 44'+sub(8), 8, '61')
+    ] })
+  ],
+  2: [
+    { title:'Определите верные и неверные утверждения', max:2, type:'tf',
+      hint:'Для каждого утверждения выберите «Верно» или «Неверно».',
+      items:[
+        { text:'Алгоритмическая предвзятость — способность ИИ всегда принимать объективные решения.', answer:'F' },
+        { text:'Обучающие данные — информация, которую ИИ создаёт после завершения обучения.', answer:'F' },
+        { text:'Дискриминация — несправедливое отношение к людям из-за их принадлежности к определённой группе.', answer:'T' },
+        { text:'Искусственный интеллект — система, которая может выполнять только заранее записанные команды без анализа данных.', answer:'F' }
+      ]
+    },
+    Object.assign({}, T2, { items:[ conv(27,10,2,'11011'), conv(48,10,2,'110000') ] }),
+    Object.assign({}, T3, { items:[ conv(65,10,8,'101'), conv(56,10,16,'38') ] }),
+    Object.assign({}, T4, { items:[ conv('110110',2,10,'54'), conv(76,8,10,'62'), conv('2C',16,10,'44') ] }),
+    Object.assign({}, T5, { items:[
+      calc('10111 + 11011', 2, '110010'),
+      calc('11100 − 10011', 2, '1001'),
+      calc('15'+sub(8)+' + 44'+sub(8), 8, '61')
+    ] })
+  ]
+};
+// идентификаторы
+[1,2].forEach(function(v){
+  TASKS[v].forEach(function(t,ti){
+    t.items.forEach(function(it,ii){ it.id = 't'+(ti+1)+'_'+(ii+1); it.type = t.type; });
+  });
+});
+
+// Критерии и дескрипторы — как в документе (одинаковы для обоих вариантов)
+var CRITERIA = [
+  { title:'Знает основные понятия, связанные с искусственным интеллектом и алгоритмической предвзятостью',
+    descs:[
+      { task:1, text:'Устанавливает соответствие 1, 2', ids:['t1_1','t1_2'], all:true },
+      { task:1, text:'Устанавливает соответствие 3, 4', ids:['t1_3','t1_4'], all:true }
+    ] },
+  { title:'Переводит натуральные числа из десятичной системы счисления в двоичную, восьмеричную и шестнадцатеричную',
+    descs:[
+      { task:2, text:'Выполняет перевод из десятичной системы счисления в двоичную', ids:['t2_1','t2_2'] },
+      { task:3, text:'Выполняет перевод из десятичной системы счисления в восьмеричную и шестнадцатеричную', ids:['t3_1','t3_2'] }
+    ] },
+  { title:'Переводит натуральные числа из двоичной, восьмеричной и шестнадцатеричной систем счисления в десятичную',
+    descs:[
+      { task:4, text:'Выполняет перевод из двоичной системы счисления в десятичную', ids:['t4_1'] },
+      { task:4, text:'Выполняет перевод из восьмеричной системы счисления в десятичную', ids:['t4_2'] },
+      { task:4, text:'Выполняет перевод из шестнадцатеричной в десятичную систему счисления', ids:['t4_3'] }
+    ] },
+  { title:'Выполняет арифметические действия (сложение, вычитание) с натуральными числами в позиционных системах счисления',
+    descs:[
+      { task:5, text:'Выполняет сложение в двоичной системе счисления', ids:['t5_1'] },
+      { task:5, text:'Выполняет вычитание в двоичной системе счисления', ids:['t5_2'] },
+      { task:5, text:'Выполняет сложение в восьмеричной системе счисления', ids:['t5_3'] }
+    ] }
+];
+
+var TOTAL_SECONDS = 20*60;
+var KEY = 'sor8-sistemy-schisleniya-v1';
+
+/* ================= Состояние ================= */
+function fresh(){ return { stage:'start', fio:'', variant:null, startedAt:0, finishedAt:0, answers:{}, result:null }; }
+function load(){
+  try{
+    var raw = sessionStorage.getItem(KEY);
+    if(!raw) return null;
+    var s = JSON.parse(raw);
+    return (s && s.stage) ? s : null;
+  }catch(e){ return null; }
+}
+function save(){ try{ sessionStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function wipe(){ try{ sessionStorage.removeItem(KEY); }catch(e){} }
+var S = load() || fresh();
+var timerId = null;
+
+/* ================= Утилиты ================= */
+function $(id){ return document.getElementById(id); }
+function esc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function plural(n, f){
+  var m10=n%10, m100=n%100;
+  if(m10===1 && m100!==11) return f[0];
+  if(m10>=2 && m10<=4 && (m100<10 || m100>=20)) return f[1];
+  return f[2];
+}
+function pad(n){ return n<10 ? '0'+n : ''+n; }
+function fmtTime(sec){ return pad(Math.floor(sec/60))+':'+pad(sec%60); }
+function normalize(s){
+  s = String(s||'').toUpperCase()
+    .replace(/[\s_.,'`’]/g,'')
+    .replace(/[₀-₉]/g,'')
+    .replace(/А/g,'A').replace(/В/g,'B').replace(/С/g,'C').replace(/Е/g,'E');
+  return s.replace(/^0+(?=.)/,'');
+}
+function allItems(){
+  var out = [];
+  TASKS[S.variant].forEach(function(t){ t.items.forEach(function(it){ out.push(it); }); });
+  return out;
+}
+function answeredCount(){
+  return allItems().filter(function(it){
+    return String(S.answers[it.id]||'').trim() !== '';
+  }).length;
+}
+
+/* ================= Подсчёт баллов ================= */
+function isRight(it){
+  var a = S.answers[it.id];
+  if(it.type==='match' || it.type==='tf') return a === it.answer;
+  return normalize(a) === normalize(it.answer);
+}
+function scoreDesc(d){
+  var items = TASKS[S.variant][d.task-1].items.filter(function(it){ return d.ids.indexOf(it.id)!==-1; });
+  var right = items.filter(isRight).length;
+  if(d.all) return { got: right===items.length ? 1 : 0, max:1 };
+  return { got:right, max:items.length };
+}
+
+/* ================= Экраны ================= */
+function show(stage){
+  $('start').hidden  = stage!=='start';
+  $('test').hidden   = stage!=='test';
+  $('result').hidden = stage!=='result';
+  window.scrollTo(0,0);
+}
+
+function chips(name, opts, current){
+  return '<div class="seg" role="radiogroup">' + opts.map(function(o){
+    return '<label class="chip"><input type="radio" name="'+name+'" data-id="'+name+'" value="'+o[0]+'"'+
+           (current===o[0]?' checked':'')+'><span>'+o[1]+'</span></label>';
+  }).join('') + '</div>';
+}
+
+function buildTasks(){
+  var tasks = TASKS[S.variant];
+  var html = tasks.map(function(t,ti){
+    var n = ti+1, body = '';
+    if(t.type==='match'){
+      body += '<div class="defs">' + Object.keys(t.defs).map(function(k){
+        return '<div><b>'+k+'</b><span>'+esc(t.defs[k])+'</span></div>';
+      }).join('') + '</div>';
+      body += t.items.map(function(it,ii){
+        return '<div class="row"><div class="term"><b>'+(ii+1)+'</b><span>'+esc(it.text)+'</span></div>'+
+               chips(it.id, [['A','A'],['B','B'],['C','C'],['D','D']], S.answers[it.id]) + '</div>';
+      }).join('');
+    } else if(t.type==='tf'){
+      body += t.items.map(function(it,ii){
+        return '<div class="row"><div class="term"><b>'+(ii+1)+'</b><span>'+esc(it.text)+'</span></div>'+
+               chips(it.id, [['T','Верно'],['F','Неверно']], S.answers[it.id]) + '</div>';
+      }).join('');
+    } else {
+      body += t.items.map(function(it){
+        var v = S.answers[it.id] || '';
+        return '<div class="q"><div class="expr">'+it.html+' =</div>'+
+          '<input type="text" data-id="'+it.id+'" value="'+esc(v)+'" class="'+(v.trim()?'filled':'')+'"'+
+          ' inputmode="'+(it.mode==='numeric'?'numeric':'text')+'" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"'+
+          ' aria-label="Ответ в системе счисления с основанием '+it.to+'">'+
+          '<span class="base">'+sub(it.to)+'</span></div>';
+      }).join('');
+    }
+    return '<section class="task"><div class="task-head"><span class="num">'+n+'</span>'+
+           '<h2>'+esc(t.title)+'</h2><span class="pts">'+t.max+' '+plural(t.max,['балл','балла','баллов'])+'</span></div>'+
+           (t.hint ? '<p class="hint">'+esc(t.hint)+'</p>' : '') + body + '</section>';
+  }).join('');
+  $('tasks').innerHTML = html;
+}
+
+function updateProgress(){
+  var total = allItems().length, done = answeredCount();
+  $('progBar').style.width = (total ? Math.round(done/total*100) : 0) + '%';
+  $('whoMeta').textContent = 'Вариант '+S.variant+', отвечено '+done+' из '+total;
+}
+
+function tick(){
+  var left = Math.max(0, TOTAL_SECONDS - Math.floor((Date.now()-S.startedAt)/1000));
+  var el = $('timer');
+  el.textContent = fmtTime(left);
+  el.classList.toggle('low', left<=300);
+  if(left<=0) finish(true);
+}
+function startTimer(){
+  stopTimer();
+  tick();
+  if(S.stage==='test') timerId = setInterval(tick, 500);
+}
+function stopTimer(){ if(timerId){ clearInterval(timerId); timerId=null; } }
+
+function enterTest(){
+  buildTasks();
+  $('whoName').textContent = S.fio;
+  updateProgress();
+  show('test');
+  window.onbeforeunload = function(e){ e.preventDefault(); e.returnValue=''; return ''; };
+  startTimer();
+}
+
+function finish(auto){
+  if(S.stage!=='test') return;
+  stopTimer();
+  window.onbeforeunload = null;
+  var desc = [], total = 0, max = 0;
+  CRITERIA.forEach(function(c,ci){
+    c.descs.forEach(function(d){
+      var sc = scoreDesc(d);
+      total += sc.got; max += sc.max;
+      desc.push({ crit:ci, task:d.task, text:d.text, got:sc.got, max:sc.max });
+    });
+  });
+  S.stage = 'result';
+  S.finishedAt = Date.now();
+  S.result = { desc:desc, total:total, max:max, auto:!!auto };
+  save();
+  renderResult();
+}
+
+function descHtml(r){
+  var out = '<div class="drow dhead"><span>№</span><span>Дескриптор</span><span>Балл</span></div>', last = -1;
+  r.desc.forEach(function(x){
+    if(x.crit !== last){
+      last = x.crit;
+      out += '<h3>'+esc(CRITERIA[x.crit].title)+'</h3>';
+    }
+    out += '<div class="drow"><span class="n">'+x.task+'</span><span>'+esc(x.text)+'</span>'+
+           '<span class="s'+(x.got===0?' zero':'')+'">'+x.got+' / '+x.max+'</span></div>';
+  });
+  return out;
+}
+
+function renderResult(){
+  var r = S.result;
+  var d = new Date(S.finishedAt);
+  var date = pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.'+d.getFullYear()+' '+pad(d.getHours())+':'+pad(d.getMinutes());
+  var spent = Math.min(TOTAL_SECONDS, Math.max(0, Math.round((S.finishedAt-S.startedAt)/1000)));
+  var pct = r.max ? Math.round(r.total/r.max*100) : 0;
+  var html =
+    '<div class="rcard">'+
+      '<p class="name">'+esc(S.fio)+'</p>'+
+      '<p class="meta">Вариант '+S.variant+', '+date+', время '+Math.floor(spent/60)+' мин '+pad(spent%60)+' с</p>'+
+      '<div class="score"><span class="big">'+r.total+'</span><span class="of">из '+r.max+' '+plural(r.max,['балла','баллов','баллов'])+'</span></div>'+
+      '<div class="meter" role="img" aria-label="'+pct+' процентов"><i style="width:'+pct+'%"></i></div>'+
+      '<p class="pct">'+pct+'%</p>'+
+      '<p class="bin">В двоичной системе: <code>'+r.total.toString(2)+'</code>'+sub(2)+'</p>'+
+      '<div class="desc"><h2 class="dh">Баллы по дескрипторам</h2><p class="dsub">Обучающийся:</p>'+ descHtml(r) +'</div>'+
+      (r.auto ? '<p class="autonote">Время вышло, работа сдана автоматически.</p>' : '')+
+    '</div>'+
+    '<p class="shot">Сделайте скриншот этого экрана и покажите учителю.</p>'+
+    '<button type="button" class="btn secondary again" id="againBtn">Новый ученик</button>';
+  $('result').innerHTML = html;
+  show('result');
+}
+
+/* ================= Диалог ================= */
+var modalOk = null;
+function ask(title, text, okLabel, cancelLabel, onOk){
+  $('mTitle').textContent = title;
+  $('mText').textContent = text;
+  $('mOk').textContent = okLabel;
+  $('mCancel').textContent = cancelLabel;
+  modalOk = onOk;
+  $('modal').hidden = false;
+  $('mCancel').focus();
+}
+function closeModal(){ $('modal').hidden = true; modalOk = null; }
+$('mCancel').addEventListener('click', closeModal);
+$('mOk').addEventListener('click', function(){ var f = modalOk; closeModal(); if(f) f(); });
+$('modal').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+document.addEventListener('keydown', function(e){ if(e.key==='Escape' && !$('modal').hidden) closeModal(); });
+
+/* ================= События ================= */
+$('startBtn').addEventListener('click', function(){
+  var fio = $('fio').value.replace(/\s+/g,' ').trim();
+  var vEl = document.querySelector('input[name="variant"]:checked');
+  var err = $('startErr');
+  if(fio.split(' ').length < 2){
+    err.textContent = 'Введите фамилию и имя полностью.';
+    err.hidden = false; $('fio').focus(); return;
+  }
+  if(!vEl){
+    err.textContent = 'Выберите вариант.';
+    err.hidden = false; return;
+  }
+  err.hidden = true;
+  S = fresh();
+  S.stage = 'test';
+  S.fio = fio;
+  S.variant = vEl.value;
+  S.startedAt = Date.now();
+  save();
+  enterTest();
+});
+$('fio').addEventListener('input', function(){ $('startErr').hidden = true; });
+
+$('tasks').addEventListener('input', function(e){
+  var el = e.target;
+  if(el.type==='text' && el.dataset.id){
+    S.answers[el.dataset.id] = el.value;
+    el.classList.toggle('filled', el.value.trim()!=='');
+    save(); updateProgress();
+  }
+});
+$('tasks').addEventListener('change', function(e){
+  var el = e.target;
+  if(el.type==='radio' && el.dataset.id){
+    S.answers[el.dataset.id] = el.value;
+    save(); updateProgress();
+  }
+});
+
+$('finishBtn').addEventListener('click', function(){
+  var left = allItems().length - answeredCount();
+  var text = (left>0 ? 'Не заполнено полей: '+left+'. ' : '') + 'После завершения ответы изменить нельзя.';
+  ask('Завершить работу?', text, 'Завершить', 'Вернуться', function(){ finish(false); });
+});
+
+$('result').addEventListener('click', function(e){
+  if(e.target && e.target.id==='againBtn'){
+    ask('Начать для другого ученика?', 'Результат исчезнет с этого экрана. Убедитесь, что он уже записан.', 'Да, начать', 'Отмена', function(){
+      wipe(); S = fresh();
+      $('fio').value = '';
+      var c = document.querySelector('input[name="variant"]:checked'); if(c) c.checked = false;
+      show('start');
+    });
+  }
+});
+
+/* ================= Запуск ================= */
+if(S.stage==='test' && S.variant && TASKS[S.variant]) enterTest();
+else if(S.stage==='result' && S.result && S.result.desc) renderResult();
+else { S = fresh(); show('start'); }
+
+})();
+</script>
+</body>
+</html>
